@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://www.activiti.org/testm1574124674914" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="m1574124674914" name="" targetNamespace="http://www.activiti.org/testm1574124674914">
+  <process id="demo_process_1" name="请假流程" isExecutable="true">
+    <startEvent id="StartEvent_1" name="提交请假单">
+      <extensionElements>
+        <activiti:formProperty id="userId" label="申请人id" type="long" />
+        <activiti:formProperty id="userName" label="申请人姓名" type="string" />
+        <activiti:formProperty id="type" label="请假类型" type="string" />
+        <activiti:formProperty id="auditor" label="审批人" type="string" />
+        <activiti:formProperty id="day" label="请假天数" type="int" />
+        <activiti:formProperty id="reason" label="请假原因" type="string" />
+      </extensionElements>
+      <outgoing>SequenceFlow_13zwj1w</outgoing>
+    </startEvent>
+    <userTask id="UserTask_0udlbwl" name="班长【审批】" activiti:formKey="audit" activiti:assignee="${auditor}">
+      <extensionElements>
+        <activiti:formProperty id="auditMsg" label="审批结果" type="boolean" />
+      </extensionElements>
+      <incoming>SequenceFlow_0g8gqrl</incoming>
+      <outgoing>SequenceFlow_18b5il0</outgoing>
+    </userTask>
+    <exclusiveGateway id="ExclusiveGateway_09ku8vf">
+      <incoming>SequenceFlow_13zwj1w</incoming>
+      <outgoing>SequenceFlow_0g8gqrl</outgoing>
+      <outgoing>SequenceFlow_14mv2mt</outgoing>
+      <outgoing>SequenceFlow_1jmp1gu</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_13zwj1w" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_09ku8vf" />
+    <sequenceFlow id="SequenceFlow_0g8gqrl" name="请假天数(0,3]" sourceRef="ExclusiveGateway_09ku8vf" targetRef="UserTask_0udlbwl">
+      <conditionExpression xsi:type="tFormalExpression">${day&lt;=3}</conditionExpression>
+    </sequenceFlow>
+    <userTask id="UserTask_17l3xy6" name="班主任【审批】" activiti:formKey="audit">
+      <extensionElements>
+        <activiti:formProperty id="auditMsg" label="审批结果" type="boolean" />
+      </extensionElements>
+      <incoming>SequenceFlow_14mv2mt</incoming>
+      <outgoing>SequenceFlow_1im4ez5</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_14mv2mt" name="请假天数(3,5]" sourceRef="ExclusiveGateway_09ku8vf" targetRef="UserTask_17l3xy6">
+      <conditionExpression xsi:type="tFormalExpression">${day&gt;3&amp;&amp;day&lt;=5}</conditionExpression>
+    </sequenceFlow>
+    <endEvent id="EndEvent_1s5yqj0" name="结束">
+      <incoming>SequenceFlow_1im4ez5</incoming>
+      <incoming>SequenceFlow_18b5il0</incoming>
+      <incoming>SequenceFlow_0iclt3u</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_1im4ez5" sourceRef="UserTask_17l3xy6" targetRef="EndEvent_1s5yqj0" />
+    <sequenceFlow id="SequenceFlow_18b5il0" sourceRef="UserTask_0udlbwl" targetRef="EndEvent_1s5yqj0" />
+    <sequenceFlow id="SequenceFlow_1jmp1gu" name="请假天数(5,+∞)" sourceRef="ExclusiveGateway_09ku8vf" targetRef="ExclusiveGateway_0etks1o">
+      <conditionExpression xsi:type="tFormalExpression">${day&gt;5}</conditionExpression>
+    </sequenceFlow>
+    <parallelGateway id="ExclusiveGateway_0etks1o">
+      <incoming>SequenceFlow_1jmp1gu</incoming>
+      <outgoing>SequenceFlow_09olh5r</outgoing>
+      <outgoing>SequenceFlow_0x5dyre</outgoing>
+    </parallelGateway>
+    <userTask id="UserTask_1e1p9in" name="班主任" activiti:formKey="audit" activiti:assignee="${teacher}">
+      <extensionElements>
+        <activiti:formProperty id="auditMsg" label="审批结果" type="boolean" />
+      </extensionElements>
+      <incoming>SequenceFlow_09olh5r</incoming>
+      <outgoing>SequenceFlow_1gonu0a</outgoing>
+      <outgoing>SequenceFlow_1ap0q0y</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_09olh5r" sourceRef="ExclusiveGateway_0etks1o" targetRef="UserTask_1e1p9in">
+      <extensionElements>
+        <activiti:executionListener class="com.zm.demo.listener.flow.FlowNotifyListener" event="take" />
+      </extensionElements>
+    </sequenceFlow>
+    <userTask id="UserTask_009ivu1" name="校长" activiti:formKey="audit" activiti:assignee="${director}">
+      <extensionElements>
+        <activiti:formProperty id="auditMsg" label="审批结果" type="boolean" />
+      </extensionElements>
+      <incoming>SequenceFlow_0x5dyre</incoming>
+      <outgoing>SequenceFlow_02nfcna</outgoing>
+      <outgoing>SequenceFlow_1si6azm</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_0x5dyre" sourceRef="ExclusiveGateway_0etks1o" targetRef="UserTask_009ivu1">
+      <extensionElements>
+        <activiti:executionListener class="com.zm.demo.listener.flow.FlowNotifyListener" event="take" />
+      </extensionElements>
+    </sequenceFlow>
+    <parallelGateway id="ExclusiveGateway_01ocbg1">
+      <incoming>SequenceFlow_02nfcna</incoming>
+      <incoming>SequenceFlow_1gonu0a</incoming>
+      <outgoing>SequenceFlow_0iclt3u</outgoing>
+    </parallelGateway>
+    <sequenceFlow id="SequenceFlow_02nfcna" name="同意" sourceRef="UserTask_009ivu1" targetRef="ExclusiveGateway_01ocbg1">
+      <conditionExpression xsi:type="tFormalExpression">${auditMsg==true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="SequenceFlow_1gonu0a" name="同意" sourceRef="UserTask_1e1p9in" targetRef="ExclusiveGateway_01ocbg1">
+      <conditionExpression xsi:type="tFormalExpression">${auditMsg==true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="SequenceFlow_0iclt3u" sourceRef="ExclusiveGateway_01ocbg1" targetRef="EndEvent_1s5yqj0" />
+    <endEvent id="EndEvent_0gob58a" name="结束">
+      <incoming>SequenceFlow_1si6azm</incoming>
+      <incoming>SequenceFlow_1ap0q0y</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_1si6azm" name="不同意" sourceRef="UserTask_009ivu1" targetRef="EndEvent_0gob58a">
+      <conditionExpression xsi:type="tFormalExpression">${auditMsg==false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="SequenceFlow_1ap0q0y" name="不同意" sourceRef="UserTask_1e1p9in" targetRef="EndEvent_0gob58a">
+      <conditionExpression xsi:type="tFormalExpression">${auditMsg==false}</conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="482" y="-68" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="472" y="-92" width="55" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0udlbwl_di" bpmnElement="UserTask_0udlbwl">
+        <dc:Bounds x="270" y="40" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_09ku8vf_di" bpmnElement="ExclusiveGateway_09ku8vf" isMarkerVisible="true">
+        <dc:Bounds x="475" y="55" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="488" y="112" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_13zwj1w_di" bpmnElement="SequenceFlow_13zwj1w">
+        <di:waypoint x="500" y="-32" />
+        <di:waypoint x="500" y="55" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0g8gqrl_di" bpmnElement="SequenceFlow_0g8gqrl">
+        <di:waypoint x="475" y="80" />
+        <di:waypoint x="370" y="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="391" y="62" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_17l3xy6_di" bpmnElement="UserTask_17l3xy6">
+        <dc:Bounds x="450" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_14mv2mt_di" bpmnElement="SequenceFlow_14mv2mt">
+        <di:waypoint x="500" y="105" />
+        <di:waypoint x="500" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="478" y="155" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1s5yqj0_di" bpmnElement="EndEvent_1s5yqj0">
+        <dc:Bounds x="482" y="472" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="489" y="515" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1im4ez5_di" bpmnElement="SequenceFlow_1im4ez5">
+        <di:waypoint x="500" y="290" />
+        <di:waypoint x="500" y="472" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_18b5il0_di" bpmnElement="SequenceFlow_18b5il0">
+        <di:waypoint x="320" y="120" />
+        <di:waypoint x="320" y="490" />
+        <di:waypoint x="482" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jmp1gu_di" bpmnElement="SequenceFlow_1jmp1gu">
+        <di:waypoint x="525" y="80" />
+        <di:waypoint x="895" y="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="676" y="62" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_0z3lo72_di" bpmnElement="ExclusiveGateway_0etks1o">
+        <dc:Bounds x="895" y="55" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1e1p9in_di" bpmnElement="UserTask_1e1p9in">
+        <dc:Bounds x="1040" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_09olh5r_di" bpmnElement="SequenceFlow_09olh5r">
+        <di:waypoint x="932" y="93" />
+        <di:waypoint x="1043" y="213" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_009ivu1_di" bpmnElement="UserTask_009ivu1">
+        <dc:Bounds x="700" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0x5dyre_di" bpmnElement="SequenceFlow_0x5dyre">
+        <di:waypoint x="908" y="93" />
+        <di:waypoint x="790" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_1u4y537_di" bpmnElement="ExclusiveGateway_01ocbg1">
+        <dc:Bounds x="895" y="355" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_02nfcna_di" bpmnElement="SequenceFlow_02nfcna">
+        <di:waypoint x="797" y="287" />
+        <di:waypoint x="906" y="369" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="840" y="310" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1gonu0a_di" bpmnElement="SequenceFlow_1gonu0a">
+        <di:waypoint x="1042" y="285" />
+        <di:waypoint x="934" y="369" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="977" y="309" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0iclt3u_di" bpmnElement="SequenceFlow_0iclt3u">
+        <di:waypoint x="920" y="405" />
+        <di:waypoint x="920" y="490" />
+        <di:waypoint x="518" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0gob58a_di" bpmnElement="EndEvent_0gob58a">
+        <dc:Bounds x="902" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="910" y="275" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1si6azm_di" bpmnElement="SequenceFlow_1si6azm">
+        <di:waypoint x="800" y="250" />
+        <di:waypoint x="902" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="834" y="232" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ap0q0y_di" bpmnElement="SequenceFlow_1ap0q0y">
+        <di:waypoint x="1040" y="250" />
+        <di:waypoint x="938" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="972" y="232" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

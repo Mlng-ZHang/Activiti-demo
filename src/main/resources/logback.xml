@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+    <appender name="fileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--输出路径-->
+            <fileNamePattern>${user.dir}/logs/log/online-study.%d.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--输出路径-->
+            <fileNamePattern>${user.dir}/logs/error/online-study.%d.error</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 用于打印 Spring 在启动的时候初始化各个 Bean 的信息 -->
+    <logger name="org.springframework.web" level="DEBUG"/>
+
+    <!--如果想要记录更详细的 SQL 日志，只需要把下面的日志级别改成 TRACE 就可以了-->
+    <logger name="com.zm.demo.db.mapper" level="DEBUG"></logger>
+
+    <root level="debug">
+        <appender-ref ref="consoleLog"/>
+        <appender-ref ref="fileLog"/>
+        <appender-ref ref="fileErrorLog"/>
+    </root>
+</configuration>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://www.activiti.org/testm1574124674914" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="m1574124674914" name="" targetNamespace="http://www.activiti.org/testm1574124674914">
+  <process id="process_task_1" name="表单流程" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener class="com.zm.demo.listener.flow.GlobalListener" event="start">
+        <activiti:field name="msg">
+          <activiti:string>我是inject value</activiti:string>
+        </activiti:field>
+      </activiti:executionListener>
+      <activiti:executionListener class="com.zm.demo.listener.flow.GlobalListener" event="end" />
+    </extensionElements>
+    <startEvent id="demo_1" name="开始节点">
+      <outgoing>SequenceFlow_1supjqh</outgoing>
+    </startEvent>
+    <userTask id="UserTask_0pgot42" name="提交表单">
+      <extensionElements>
+        <activiti:formProperty id="id" label="编号" type="string" />
+        <activiti:formProperty id="name" label="姓名" type="string" />
+        <activiti:executionListener class="com.zm.demo.listener.flow.CustomExecutionListener" event="start">
+            <activiti:field name="msg">
+              <activiti:string>Execution Start</activiti:string>
+            </activiti:field>
+        </activiti:executionListener>
+        <activiti:executionListener class="com.zm.demo.listener.flow.CustomExecutionListener" event="end">
+            <activiti:field name="msg">
+               <activiti:string>Execution End</activiti:string>
+            </activiti:field>
+        </activiti:executionListener>
+        <activiti:taskListener class="com.zm.demo.listener.flow.CustomTaskListener" event="create">
+            <activiti:field name="msg">
+               <activiti:string>Task Create</activiti:string>
+            </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener class="com.zm.demo.listener.flow.CustomTaskListener" event="assignment">
+            <activiti:field name="msg">
+               <activiti:string>Task Assignment</activiti:string>
+            </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener class="com.zm.demo.listener.flow.CustomTaskListener" event="complete">
+            <activiti:field name="msg">
+               <activiti:string>Task Complete</activiti:string>
+            </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener class="com.zm.demo.listener.flow.CustomTaskListener" event="delete">
+            <activiti:field name="msg">
+               <activiti:string>Task Delete</activiti:string>
+            </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+      <incoming>SequenceFlow_1supjqh</incoming>
+      <outgoing>SequenceFlow_1oevt2u</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_1supjqh" sourceRef="demo_1" targetRef="UserTask_0pgot42" />
+    <sequenceFlow id="SequenceFlow_1oevt2u" sourceRef="UserTask_0pgot42" targetRef="UserTask_1oo2mv8" />
+    <userTask id="UserTask_1oo2mv8" name="一级审核" activiti:assignee="${firstAudit}">
+      <extensionElements>
+        <activiti:formProperty id="result" label="审核结果" type="string" />
+      </extensionElements>
+      <incoming>SequenceFlow_1oevt2u</incoming>
+      <outgoing>SequenceFlow_0dwbk6o</outgoing>
+    </userTask>
+    <userTask id="UserTask_09gpy5f" name="二级审核" activiti:assignee="${secondAudit}">
+      <extensionElements>
+        <activiti:formProperty id="result" label="审核结果" type="string">
+          <activiti:properties>
+            <activiti:property id="Property_2o34qss" />
+          </activiti:properties>
+        </activiti:formProperty>
+        <activiti:taskListener class="" event="assignment" />
+      </extensionElements>
+      <incoming>SequenceFlow_0dwbk6o</incoming>
+      <outgoing>SequenceFlow_1fqg3fr</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_0dwbk6o" sourceRef="UserTask_1oo2mv8" targetRef="UserTask_09gpy5f">
+      <extensionElements>
+        <activiti:executionListener class="com.zm.demo.listener.flow.AutoAssignUserListener" event="take" />
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="EndEvent_0m97xv4" name="结束节点">
+      <extensionElements>
+        <activiti:executionListener class="com.zm.demo.listener.flow.FlowNotifyListener" event="end" />
+      </extensionElements>
+      <incoming>SequenceFlow_1fqg3fr</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_1fqg3fr" sourceRef="UserTask_09gpy5f" targetRef="EndEvent_0m97xv4" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_task_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="demo_1">
+        <dc:Bounds x="212" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="208" y="255" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0pgot42_di" bpmnElement="UserTask_0pgot42">
+        <dc:Bounds x="300" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1supjqh_di" bpmnElement="SequenceFlow_1supjqh">
+        <di:waypoint x="248" y="230" />
+        <di:waypoint x="300" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1oevt2u_di" bpmnElement="SequenceFlow_1oevt2u">
+        <di:waypoint x="400" y="230" />
+        <di:waypoint x="460" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1tol27a_di" bpmnElement="UserTask_1oo2mv8">
+        <dc:Bounds x="460" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_09gpy5f_di" bpmnElement="UserTask_09gpy5f">
+        <dc:Bounds x="620" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dwbk6o_di" bpmnElement="SequenceFlow_0dwbk6o">
+        <di:waypoint x="560" y="230" />
+        <di:waypoint x="620" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0m97xv4_di" bpmnElement="EndEvent_0m97xv4">
+        <dc:Bounds x="782" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fqg3fr_di" bpmnElement="SequenceFlow_1fqg3fr">
+        <di:waypoint x="720" y="230" />
+        <di:waypoint x="782" y="230" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

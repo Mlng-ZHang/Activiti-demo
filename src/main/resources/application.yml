@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: dev
+
+
+jwt:
+  header: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9
+  secret: YWN0aXZpdGk3IGRlbW8gY29weXJpZ2h0IGJ5IHpt
+  expiration: 5m   #单位 s,m,h,d
+
+route:
+  ignore: /auth/login,/auth/register

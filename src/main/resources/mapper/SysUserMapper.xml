@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zm.demo.db.mapper.SysUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zm.demo.db.entity.SysUser">
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="realname" property="realname" />
+        <result column="phone" property="phone" />
+        <collection property="roles" ofType="com.zm.demo.db.entity.SysRole">
+            <result column="rolename" property="rolename"/>
+        </collection>
+        <collection property="resources" ofType="com.zm.demo.db.entity.SysResource">
+            <result column="resource_key" property="resourceKey"/>
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, username, password, realname, phone
+    </sql>
+
+    <select id="selectAllByUserName" resultMap="BaseResultMap">
+        SELECT
+        u.id,
+        u.username,
+        u.password,
+        r.rolename,
+        sr.resource_key
+        FROM
+        sys_user u
+        LEFT JOIN sys_user_role ur ON u.id = ur.userId
+        LEFT JOIN sys_role r ON r.id = ur.roleId
+        LEFT JOIN sys_role_resource rr on	rr.role_id = r.id
+        LEFT JOIN sys_resource sr on rr.resource_id = sr.id
+        WHERE
+        u.username = #{username}
+    </select>
+
+    <select id="selectBaseByUserName" resultType="com.zm.demo.db.entity.SysUser">
+        SELECT * FROM sys_user WHERE username = #{username}
+    </select>
+
+</mapper>

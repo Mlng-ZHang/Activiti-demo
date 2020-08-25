@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://www.activiti.org/testm1574124674914" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="m1574124674914" name="" targetNamespace="http://www.activiti.org/testm1574124674914">
+  <process id="time_service_demo" name="定时自动流转" isExecutable="true">
+    <startEvent id="StartEvent_1" name="开始节点">
+      <outgoing>SequenceFlow_132zz1h</outgoing>
+    </startEvent>
+    <sequenceFlow id="SequenceFlow_132zz1h" sourceRef="StartEvent_1" targetRef="Task_18j9l03" />
+    <userTask id="Task_18j9l03" name="财务审批">
+      <extensionElements>
+        <activiti:formProperty id="money" label="发放金额" type="decimal" />
+        <activiti:formProperty id="target" label="发放对象" type="string" />
+        <activiti:formProperty id="auditMsg" label="审核结果" type="string" />
+        <activiti:taskListener class="com.zm.demo.listener.flow.CustomTaskListener" event="complete">
+          <activiti:field name="msg">
+             <activiti:string>com.zm.demo.listener.execute.impl.TimeExecutionImpl</activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+      <incoming>SequenceFlow_132zz1h</incoming>
+      <outgoing>SequenceFlow_115uk2t</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_115uk2t" sourceRef="Task_18j9l03" targetRef="IntermediateThrowEvent_1nyz2vp" />
+    <intermediateCatchEvent id="IntermediateThrowEvent_1nyz2vp" name="定时">
+      <incoming>SequenceFlow_115uk2t</incoming>
+      <outgoing>SequenceFlow_0wxylvv</outgoing>
+      <timerEventDefinition>
+        <timeDate xsi:type="tFormalExpression">${dateTime}</timeDate>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="SequenceFlow_0wxylvv" sourceRef="IntermediateThrowEvent_1nyz2vp" targetRef="Task_0ck0e0o" />
+    <serviceTask id="Task_0ck0e0o" name="发放工资" activiti:class="com.zm.demo.listener.flow.serviceTask.AutoAssignMoneyServiceTask">
+      <incoming>SequenceFlow_0wxylvv</incoming>
+      <outgoing>SequenceFlow_1xa2kxl</outgoing>
+    </serviceTask>
+    <endEvent id="EndEvent_1f35yzv" name="结束">
+      <incoming>SequenceFlow_1xa2kxl</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_1xa2kxl" sourceRef="Task_0ck0e0o" targetRef="EndEvent_1f35yzv" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="time_service_demo">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="272" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="268" y="265" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_132zz1h_di" bpmnElement="SequenceFlow_132zz1h">
+        <di:waypoint x="308" y="240" />
+        <di:waypoint x="360" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0v3np36_di" bpmnElement="Task_18j9l03">
+        <dc:Bounds x="360" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_115uk2t_di" bpmnElement="SequenceFlow_115uk2t">
+        <di:waypoint x="460" y="240" />
+        <di:waypoint x="512" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_0rdukgx_di" bpmnElement="IntermediateThrowEvent_1nyz2vp">
+        <dc:Bounds x="512" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="519" y="265" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0wxylvv_di" bpmnElement="SequenceFlow_0wxylvv">
+        <di:waypoint x="548" y="240" />
+        <di:waypoint x="600" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1l8dce0_di" bpmnElement="Task_0ck0e0o">
+        <dc:Bounds x="600" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1f35yzv_di" bpmnElement="EndEvent_1f35yzv">
+        <dc:Bounds x="752" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="759" y="265" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1xa2kxl_di" bpmnElement="SequenceFlow_1xa2kxl">
+        <di:waypoint x="700" y="240" />
+        <di:waypoint x="752" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
